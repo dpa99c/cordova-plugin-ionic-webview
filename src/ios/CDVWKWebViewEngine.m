@@ -262,6 +262,19 @@
 
     self.handler = [[IONAssetHandler alloc] initWithBasePath:[self getStartPath] andScheme:scheme];
     [configuration setURLSchemeHandler:self.handler forURLScheme:scheme];
+    
+    // Add scheme for Documents directory
+    NSString* docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* docScheme = [NSString stringWithFormat:@"%@doc",scheme];
+    IONAssetHandler* docFileHandler = [[IONAssetHandler alloc] initWithBasePath:docPath andScheme:docScheme];
+    [configuration setURLSchemeHandler:docFileHandler forURLScheme:docScheme];
+    
+    // Add scheme for Cache directory
+    NSString* cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* cacheScheme = [NSString stringWithFormat:@"%@cache",scheme];
+    IONAssetHandler* cacheFileHandler = [[IONAssetHandler alloc] initWithBasePath:cachePath andScheme:cacheScheme];
+    [configuration setURLSchemeHandler:cacheFileHandler forURLScheme:cacheScheme];
+    
 
     // re-create WKWebView, since we need to update configuration
     // remove from keyWindow before recreating
