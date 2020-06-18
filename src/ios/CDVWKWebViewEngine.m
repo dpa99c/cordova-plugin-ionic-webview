@@ -247,9 +247,6 @@ NSTimer *timer;
     // add to keyWindow to ensure it is 'active'
     [UIApplication.sharedApplication.keyWindow addSubview:self.engineWebView];
 
-    if (IsAtLeastiOSVersion(@"9.0") && [self.viewController isKindOfClass:[CDVViewController class]]) {
-        wkWebView.customUserAgent = ((CDVViewController*) self.viewController).userAgent;
-    }
 
     if ([self.viewController conformsToProtocol:@protocol(WKUIDelegate)]) {
         wkWebView.UIDelegate = (id <WKUIDelegate>)self.viewController;
@@ -650,7 +647,6 @@ static void * KVOContext = &KVOContext;
 - (void)webView:(WKWebView*)webView didFinishNavigation:(WKNavigation*)navigation
 {
     CDVViewController* vc = (CDVViewController*)self.viewController;
-    [CDVUserAgentUtil releaseLock:vc.userAgentLockToken];
 
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:CDVPageDidLoadNotification object:webView]];
 }
@@ -663,7 +659,6 @@ static void * KVOContext = &KVOContext;
 - (void)webView:(WKWebView*)theWebView didFailNavigation:(WKNavigation*)navigation withError:(NSError*)error
 {
     CDVViewController* vc = (CDVViewController*)self.viewController;
-    [CDVUserAgentUtil releaseLock:vc.userAgentLockToken];
 
     NSString* message = [NSString stringWithFormat:@"Failed to load webpage with error: %@", [error localizedDescription]];
     NSLog(@"%@", message);
